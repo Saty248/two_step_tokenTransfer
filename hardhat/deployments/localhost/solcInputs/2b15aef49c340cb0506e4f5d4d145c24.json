@@ -1,0 +1,36 @@
+{
+  "language": "Solidity",
+  "sources": {
+    "contracts/FuncSelec.sol": {
+      "content": "// SPDX-License-Identifier: MIT\npragma solidity ^0.8.19;\n\ncontract FuncSelc {\n    \n uint public value=8;\n\n  function set () external {\n    value = 9;\n  }\n  function get () public view returns (uint) {\n    return value;\n  }\n    function callGetter(address add1)public returns(bytes memory){\n       (bool success,bytes memory data)=add1.call(abi.encodeWithSelector(bytes4(keccak256(bytes(\"setter()\")))));\n       if(!success) revert(\"yo!error func call\");\n       return data;\n\n\n    }\n}"
+    }
+  },
+  "settings": {
+    "evmVersion": "paris",
+    "optimizer": {
+      "enabled": false,
+      "runs": 200
+    },
+    "outputSelection": {
+      "*": {
+        "*": [
+          "abi",
+          "evm.bytecode",
+          "evm.deployedBytecode",
+          "evm.methodIdentifiers",
+          "metadata",
+          "devdoc",
+          "userdoc",
+          "storageLayout",
+          "evm.gasEstimates"
+        ],
+        "": [
+          "ast"
+        ]
+      }
+    },
+    "metadata": {
+      "useLiteralContent": true
+    }
+  }
+}
