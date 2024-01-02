@@ -2,11 +2,11 @@ const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { assert, expect } = require("chai");
 const { getNamedAccounts, ethers, deployments } = require("hardhat");
 const { describe, beforeEach, it } = require("mocha");
-
+const {anyValue }=require("@nomicfoundation/hardhat-chai-matchers/withArgs")
 async function deployContractMapper() {
     const {deploy,log}=deployments;
-    const {deployer}=await getNamedAccounts();
-
+    const {deployer,user1}=await getNamedAccounts();
+    
     const SmartAccountDeployer=await deploy("SmartAccountDeployer",{
         from:deployer,
         args:[],
@@ -15,7 +15,7 @@ async function deployContractMapper() {
         
     })
     let SmartAccountDeployerAddress=SmartAccountDeployer.address;
-    const ContractMapper = await deploy("ContractMapper",{
+    await deploy("ContractMapper",{
         from:deployer,
         args:[SmartAccountDeployerAddress],
         log:true,
@@ -24,15 +24,17 @@ async function deployContractMapper() {
     })
     
   
-    return {SmartAccountDeployer,ContractMapper};
+    
   } 
 
 describe("contractMapper",function(){
-    let ContractMapper1,deployer1,SmartAccountDeployer1;
+    let ContractMapper1,deployer1,_user1,SmartAccountDeployer1;
 
     beforeEach(async ()=>{
-        const {deployer}=await getNamedAccounts();
+        const {deployer,user1}=await getNamedAccounts();
+      
         deployer1=deployer;
+        _user1=user1;
         await loadFixture(deployContractMapper);
         const _sad=await ethers.getContract("SmartAccountDeployer");
         SmartAccountDeployer1=_sad;
@@ -50,6 +52,21 @@ describe("contractMapper",function(){
 
         })
 
+    })
+    describe("get smart Account function",function () {
+        beforeEach(async()=>{
+            console.log("user ",_user1)
+            
+             let ans=await SmartAccountDeployer1.createAndAddSmartAccount(_user1,ContractMapper1.target);
+            console.log(ans)
+            let ans2=await ContractMapper1.getSmartAccount(_user1);
+            console.log(ans2);  
+        
+        })
+         it("it should return user Acc",async()=>{
+            let ans2 =await expect(await ContractMapper1.getSmartAccount(_user1)).not.to.be.equal("0x0000000000000000000000000000000000000000");
+            console.log("user contract address=",ans2);
+        }) 
     })
 
 })

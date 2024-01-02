@@ -25,7 +25,7 @@ contract ContractMapper is Ownable {
         return userToSmartAccount[user];
 
     }
-    function setSmartAccount(address user,address smartAccount)external onlyOwner{
+    function setSmartAccount(address user,address smartAccount)external {
         emit Log("setSmartAccount");
         userToSmartAccount[user]=smartAccount;
     }

@@ -21,6 +21,7 @@ contract SmartAccountDeployer is Ownable{
         if(userAcc==address(0x0000000000000000000000000000000000000000)){
             SmartWallet newAccount=new SmartWallet(user);
             emit NewAccount(address(newAccount), user);
+            contractMapper.setSmartAccount(user,address(newAccount));
             return address(newAccount);
         }else{
             return userAcc;
