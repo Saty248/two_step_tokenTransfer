@@ -91,6 +91,7 @@ function erc721Caller(address contAddress,bytes memory funcNameWithARguments)ext
      if(!isTokenOwner) revert notAnOWner(contAddress);
      (bool success, bytes memory data)=contAddress.call(funcNameWithARguments);
      require(success,"function call failed");
+     
      return data;
 
 

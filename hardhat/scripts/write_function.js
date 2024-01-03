@@ -66,9 +66,23 @@ let ans=await SmartAccountDeployer.createAndAddSmartAccount(user2,ContractMapper
 const transfernfttoWallet=await nft2.safeTransferFrom(user2,ans2 , 1)
              console.log(transfernfttoWallet)
              console.log("owner of usertokenId",await nft1.ownerOf(1))
-    /* console.log("balance of user2",await nft1.balanceOf(user2))  */
-  // let intA=parseInt(name);
-    //console.log("name =",MINT_NFT)
+
+             let smartWallet=await ethers.getContractAt("SmartWallet",ans2)
+             
+             let user2Wallet=smartWallet.connect(accounts[2]);
+             console.log(user2Wallet)
+
+             let ans3=await user2Wallet.adderc721Contract(nft1.target,1)
+             ans3=await ans3.wait();
+             let ans4=await user2Wallet.iserc721TokenOwner(nft1.target)
+             console.log(ans4) 
+
+             let contract=new ethers.Contract(nft2.target,["function transferFrom(address,address,uint256)"])
+            let tx=await contract.transferFrom.populateTransaction(user2Wallet.target,deployer,1);
+            console.log(tx.data)
+              let ans5=await user2Wallet.erc721Caller(nft1.target,tx.data)
+             ans5=await ans5.wait(); 
+             console.log(ans5)
 }
 
 write_function()
