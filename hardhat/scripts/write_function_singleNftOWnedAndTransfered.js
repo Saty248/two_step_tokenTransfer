@@ -83,6 +83,11 @@ const transfernfttoWallet=await nft2.safeTransferFrom(user2,ans2 , 1)
               let ans5=await user2Wallet.erc721Caller(nft1.target,tx.data)
              ans5=await ans5.wait(); 
              console.log(ans5)
+             let updateErc721=await user2Wallet.updateerc721Contract(nft2.target,1)
+             console.log(updateErc721)
+             let ans6=await user2Wallet.iserc721TokenOwner(nft1.target)
+             console.log(ans6)
+
 }
 
 write_function()

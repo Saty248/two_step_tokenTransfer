@@ -72,6 +72,32 @@ function adderc721Contract(address contractAddress,uint256 tokenId)external{
     
     
 }
+function updateerc721Contract(address contractAddress,uint256 tokenId)external{
+     emit Log("updateerc721Contract");
+    if(contractAddress==address(0x0000000000000000000000000000000000000000)) revert("zero address");
+    uint[] memory ans=erc721ToTokenId[contractAddress];
+     if(ans.length==1){
+        delete erc721ToTokenId[contractAddress];
+        
+         for (uint i = 0; i < erc721s.length; i++){
+            if(contractAddress!=erc721s[i]){
+                ans[i]=ans[ans.length-1];
+            }
+        }
+        erc721s.pop();
+     }
+     else{
+    for (uint i = 0; i < ans.length; i++){
+            if(tokenId!=ans[i]){
+                ans[i]=ans[ans.length-1];
+            }
+        }
+        erc721ToTokenId[contractAddress]=ans;
+         erc721ToTokenId[contractAddress].pop();
+        }
+
+
+}
 
 
 function erc20Caller(address contAddress,bytes memory funcNameWithARguments)external returns(bytes memory){
