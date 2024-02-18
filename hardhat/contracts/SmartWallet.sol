@@ -7,7 +7,7 @@ error notAnOWner(address);
 contract SmartWallet is Ownable,IERC721Receiver {
     address[] internal erc20s;
     address[] internal erc721s;
-    mapping (address => uint[]) erc721ToTokenId;
+    mapping (address => uint[]) internal erc721ToTokenId;
     event Log(string func);
     event ContractAdded(address _contract);
 
@@ -17,6 +17,9 @@ function balance()external view returns(uint){
 return address(this).balance;
 }
 
+function erc721ToTokenIdRead(address contAddress) public view returns(uint[]memory){
+    return erc721ToTokenId[contAddress];
+}
 function iserc20TokenOwner(address contAddress) public view returns(bool){
     bool isTokenOwner=false;
     for (uint i = 0; i < erc20s.length; i++) {

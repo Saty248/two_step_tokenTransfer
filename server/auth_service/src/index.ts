@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import 'dotenv/config'
 import { Jwt, sign, verify } from 'jsonwebtoken'
-import { AddressLike, Block, BytesLike, InfuraProvider, SignatureLike, ethers, hashMessage, isBytesLike, recoverAddress } from 'ethers'
+import { AddressLike, Block, BytesLike, InfuraProvider, SignatureLike, ethers, hashMessage, isBytesLike, recoverAddress,JsonRpcProvider } from 'ethers'
 import { getMessage, signMessage, verifyMessage } from '../src/utils/serverWallet1'
 
 //type JwtPayload=
@@ -19,18 +19,18 @@ app.use(cookieParser())
 
 const provider=new InfuraProvider('sepolia','34e42f1acb22477886b82aaba9e4a099')
 //let address="0x26A2EAC33dB1E0f4F5CA8Ac80a338eF50e9C989f"
-
+const provider1=new JsonRpcProvider('http://127.0.0.1:8545/')
 app.get('/nonce',async(req:express.Request,res:express.Response)=>{
     try {
         let address=req.query.address as string;
-    let nonce=await provider.getTransactionCount(address as AddressLike,"latest");
+    let nonce=await provider1.getTransactionCount(address as AddressLike,"latest");
     let tempToken=sign({nonce,address},process.env.JWT_SECRET,{expiresIn:'60s'})
     let message=getMessage(nonce,address)
-    let signature=await signMessage(message)
-    console.log(signature)
+    
+   
     
     res.json({
-        signature, //put to header
+        message, //put to header
         tempToken,//put to header
         "nonce":nonce
     })
@@ -42,11 +42,14 @@ app.get('/nonce',async(req:express.Request,res:express.Response)=>{
 
 app.post('/verify',async(req:express.Request,res:express.Response)=>{
     try {
-        const authHeader=req.headers['authorization'].split(" ")[1]
+        const authHeader=req.headers['authorization']
+        console.log("authTOken ",authHeader)
         let signature=req.headers['signature'] as string
+        console.log("sig ",signature)
         if(!authHeader) throw Error("no authToken")
         if(!signature) throw Error("no signature")
-        let {nonce,address}=await verify(authHeader,process.env.JWT_SECRET) as TokenInterface<typeof verify>;
+        let {nonce,address}=verify(authHeader,process.env.JWT_SECRET) as TokenInterface<typeof verify>;
+    console.log("address nonce",address,nonce)
        
         let message=getMessage(nonce,address)
         

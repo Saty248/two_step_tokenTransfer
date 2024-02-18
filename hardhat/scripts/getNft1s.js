@@ -1,8 +1,8 @@
 const { ethers } = require("hardhat")
 
 async function getNft1s() {
-    const nft1 = await ethers.getContractAt("nft1","0x95142498886E95939aFefe44461dcEfcCdeee684")
-   const name = (await nft1.name()).toString()
+    const nft1 = await ethers.getContract("Nft1")
+   const name = (await nft1.balanceOf("0x75537828f2ce51be7289709686A69CbFDbB714F1")).toString()
   // let intA=parseInt(name);
     console.log("name =",name)
 }
